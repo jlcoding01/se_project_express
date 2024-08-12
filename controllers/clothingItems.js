@@ -16,7 +16,6 @@ const createClothingItem = (req, res) => {
     .catch((err) => {
       console.log(err.name);
       if (err.name === "ValidationError") {
-        console.log(err);
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
@@ -35,7 +34,8 @@ const deleteClothingItem = (req, res) => {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
@@ -58,7 +58,8 @@ const likeItem = (req, res) => {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
@@ -81,7 +82,8 @@ const dislikeItem = (req, res) => {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });

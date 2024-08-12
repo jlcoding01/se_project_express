@@ -17,7 +17,8 @@ const getUser = (req, res) => {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(SOME_ERROR_CODE[err.name])
           .send({ message: err.message });
