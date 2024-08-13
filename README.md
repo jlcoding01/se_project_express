@@ -16,6 +16,6 @@ Before committing your code, make sure you edit the file `sprint.txt` in the roo
 
 Create a back-end server with an API and user authorization for the WTWR application. Use Node.js and Espress.js to set up an express project. Create a database and connect it to the server. Handle multiple errors and set up security and testing.
 
-## Techniques
+### Techniques
 
 Node.js, Express.js, MongoDB, RESTful API, Postman
