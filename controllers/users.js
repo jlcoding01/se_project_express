@@ -8,11 +8,12 @@ const {
 const getUsers = (req, res) => {
   User.find({})
     .then((user) => res.status(200).send(user))
-    .catch((err) =>
+    .catch((err) => {
+      console.log(err.name);
       res
         .status(defaultError)
-        .send({ message: "An error has occurred on the server" })
-    );
+        .send({ message: "An error has occurred on the server" });
+    });
 };
 
 const getUser = (req, res) => {

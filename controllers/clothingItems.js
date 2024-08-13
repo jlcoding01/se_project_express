@@ -9,11 +9,12 @@ const getClothingItem = (req, res) => {
   ClothingItem.find({})
     .orFail()
     .then((item) => res.status(200).send(item))
-    .catch((err) =>
+    .catch((err) => {
+      console.log(err.name);
       res
         .status(defaultError)
-        .send({ message: "An error has occurred on the server" })
-    );
+        .send({ message: "An error has occurred on the server" });
+    });
 };
 
 const createClothingItem = (req, res) => {
