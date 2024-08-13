@@ -1,10 +1,18 @@
 const User = require("../models/user");
-const { SOME_ERROR_CODE } = require("../utils/errors");
+const {
+  invalidDataError,
+  notFoundError,
+  defaultError,
+} = require("../utils/errors");
 
 const getUsers = (req, res) => {
   User.find({})
     .then((user) => res.status(200).send(user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) =>
+      res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" })
+    );
 };
 
 const getUser = (req, res) => {
@@ -15,15 +23,17 @@ const getUser = (req, res) => {
       console.log(err.name);
       if (err.name === "CastError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(notFoundError)
+          .send({ message: " The request was sent to a non-existent address" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(500)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -33,9 +43,13 @@ const createUser = (req, res) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

@@ -1,11 +1,19 @@
 const ClothingItem = require("../models/clothingItem");
-const { SOME_ERROR_CODE } = require("../utils/errors");
+const {
+  invalidDataError,
+  notFoundError,
+  defaultError,
+} = require("../utils/errors");
 
 const getClothingItem = (req, res) => {
   ClothingItem.find({})
     .orFail()
     .then((item) => res.status(200).send(item))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) =>
+      res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" })
+    );
 };
 
 const createClothingItem = (req, res) => {
@@ -17,10 +25,12 @@ const createClothingItem = (req, res) => {
       console.log(err.name);
       if (err.name === "ValidationError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -32,15 +42,17 @@ const deleteClothingItem = (req, res) => {
       console.log(err.name);
       if (err.name === "CastError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(notFoundError)
+          .send({ message: " The request was sent to a non-existent address" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -51,20 +63,22 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
-      console.log(err.name);
+      console.error(err);
       if (err.name === "CastError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(notFoundError)
+          .send({ message: " The request was sent to a non-existent address" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -80,15 +94,17 @@ const dislikeItem = (req, res) => {
       console.log(err.name);
       if (err.name === "CastError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
-          .status(SOME_ERROR_CODE[err.name])
-          .send({ message: err.message });
+          .status(notFoundError)
+          .send({ message: " The request was sent to a non-existent address" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
