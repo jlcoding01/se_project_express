@@ -47,9 +47,10 @@ const deleteClothingItem = (req, res) => {
           .status(forbiddenError)
           .send({ message: "Request Was Forbidden" });
       }
-      return ClothingItem.findByIdAndRemove(req.params.itemId);
+      return ClothingItem.findByIdAndRemove(req.params.itemId).then((item) =>
+        res.send({ message: "Item successfully deleted", item })
+      );
     })
-    .then((item) => res.send({ message: "Item successfully deleted", item }))
     .catch((err) => {
       console.log(err.name);
       if (err.name === "CastError") {
