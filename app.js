@@ -1,16 +1,28 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index");
+const { createUser, login } = require("./controllers/users");
+const { getClothingItem } = require("./controllers/clothingItems");
+const auth = require("./middlewares/auth");
+const cors = require("cors");
 
 const app = express();
 
 const { PORT = 3001 } = process.env;
 
 app.use(express.json());
-app.use((req, res, next) => {
-  req.user = { _id: "66ba7cd7c9ac63aa210055dd" };
-  next();
-});
+app.use(cors());
+
+app.post("/signup", createUser);
+app.post("/signin", login);
+app.get("/items", getClothingItem);
+
+// app.use((req, res, next) => {
+//   req.user = { _id: "66ba7cd7c9ac63aa210055dd" };
+//   next();
+// });
+app.use(auth);
+
 app.use("/", mainRouter);
 
 mongoose

@@ -36,7 +36,12 @@ const createClothingItem = (req, res) => {
 };
 
 const deleteClothingItem = (req, res) => {
-  ClothingItem.findByIdAndRemove(req.params.itemId)
+  const { _id } = req.user;
+  ClothingItem.findByIdAndRemove(req.params.itemId, function (_id, err) {
+    if (req.params.itemId !== _id) {
+      return res.status(403).send({ message: "Request Was Forbidden" });
+    }
+  })
     .orFail()
     .then((item) => res.send(item))
     .catch((err) => {
