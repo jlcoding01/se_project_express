@@ -3,6 +3,7 @@ const {
   invalidDataError,
   notFoundError,
   defaultError,
+  forbiddenError,
 } = require("../utils/errors");
 
 const getClothingItem = (req, res) => {
@@ -37,13 +38,18 @@ const createClothingItem = (req, res) => {
 
 const deleteClothingItem = (req, res) => {
   const { _id } = req.user;
-  ClothingItem.findByIdAndRemove(req.params.itemId, function (_id, err) {
-    if (req.params.itemId !== _id) {
-      return res.status(403).send({ message: "Request Was Forbidden" });
-    }
-  })
+
+  ClothingItem.findById(req.params.itemId)
     .orFail()
-    .then((item) => res.send(item))
+    .then((item) => {
+      if (item.owner.toString() !== _id) {
+        return res
+          .status(forbiddenError)
+          .send({ message: "Request Was Forbidden" });
+      }
+      return ClothingItem.findByIdAndRemove(req.params.itemId);
+    })
+    .then((item) => res.send({ message: "Item successfully deleted", item }))
     .catch((err) => {
       console.log(err.name);
       if (err.name === "CastError") {

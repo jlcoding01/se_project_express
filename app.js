@@ -17,10 +17,6 @@ app.post("/signup", createUser);
 app.post("/signin", login);
 app.get("/items", getClothingItem);
 
-// app.use((req, res, next) => {
-//   req.user = { _id: "66ba7cd7c9ac63aa210055dd" };
-//   next();
-// });
 app.use(auth);
 
 app.use("/", mainRouter);

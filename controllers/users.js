@@ -9,40 +9,6 @@ const {
   conflictError,
 } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
-const validator = require("validator");
-
-const getUsers = (req, res) => {
-  User.find({})
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.log(err.name);
-      res
-        .status(defaultError)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
-const getUser = (req, res) => {
-  User.findById(req.params.userId)
-    .orFail()
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.log(err.name);
-      if (err.name === "CastError") {
-        return res
-          .status(invalidDataError)
-          .send({ message: "Bad Request! Invalid data passed" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(notFoundError)
-          .send({ message: " The request was sent to a non-existent address" });
-      }
-      return res
-        .status(500)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
 
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
@@ -75,22 +41,17 @@ const createUser = (req, res) => {
       .send({ message: "Email or Password is required!" });
   }
 
-  if (!validator.isEmail(email)) {
-    return res.status(400).send({ message: "Invalid email format" });
-  }
-
   User.findOne({ email })
     .then((matched) => {
       if (matched) {
         const err = new Error("The email already exists!");
         err.code = 11000;
         throw err;
-        // return Promise.reject(new Error("The email already exists!"));
       }
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
-      User.create({ name, avatar, email, password: hash }).then((user) =>
+      return User.create({ name, avatar, email, password: hash }).then((user) =>
         res.status(201).send({
           name: user.name,
           avatar: user.avatar,
@@ -138,7 +99,7 @@ const updateUser = (req, res) => {
           .send({ message: " The request was sent to a non-existent address" });
       }
       return res
-        .status(500)
+        .status(defaultError)
         .send({ message: "An error has occurred on the server" });
     });
 };
@@ -146,23 +107,33 @@ const updateUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(invalidDataError)
+      .send({ message: "Email and password are required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send(token);
+      res.send({ token });
     })
     .catch((err) => {
-      res
-        .status(authenticationError)
-        .send({ message: "Incorrect email or password!" });
+      console.error(err);
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(authenticationError)
+          .send({ message: "Incorrect email or password!" });
+      }
+      return res
+        .status(defaultError)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
 module.exports = {
-  getUsers,
-  getUser,
   getCurrentUser,
   createUser,
   updateUser,
