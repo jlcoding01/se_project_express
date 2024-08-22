@@ -24,5 +24,5 @@ module.exports = (req, res, next) => {
   }
 
   req.user = playload;
-  next();
+  return next();
 };

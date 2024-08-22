@@ -47,7 +47,7 @@ const deleteClothingItem = (req, res) => {
           .status(forbiddenError)
           .send({ message: "Request Was Forbidden" });
       }
-      return ClothingItem.findByIdAndRemove(req.params.itemId).then((item) =>
+      return ClothingItem.findByIdAndRemove(req.params.itemId).then(() =>
         res.send({ message: "Item successfully deleted", item })
       );
     })
