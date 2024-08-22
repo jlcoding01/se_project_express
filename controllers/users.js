@@ -41,7 +41,7 @@ const createUser = (req, res) => {
       .send({ message: "Email or Password is required!" });
   }
 
-  User.findOne({ email })
+  return User.findOne({ email })
     .then((matched) => {
       if (matched) {
         const err = new Error("The email already exists!");
