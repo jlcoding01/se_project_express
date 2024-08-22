@@ -48,14 +48,16 @@ const createUser = (req, res) => {
         err.code = 11000;
         throw err;
       }
-      return bcrypt.hash(password, 10).then((hash) => {
-        User.create({ name, avatar, email, password: hash }).then((user) =>
-          res.status(201).send({
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-          })
-        );
+      return bcrypt.hash(password, 10);
+    })
+    .then((hash) => {
+      User.create({ name, avatar, email, password: hash });
+    })
+    .then((user) => {
+      res.status(201).send({
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
       });
     })
     .catch((err) => {
