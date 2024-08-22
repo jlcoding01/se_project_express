@@ -27,7 +27,7 @@ const getCurrentUser = (req, res) => {
           .send({ message: " The request was sent to a non-existent address" });
       }
       return res
-        .status(500)
+        .status(defaultError)
         .send({ message: "An error has occurred on the server" });
     });
 };
@@ -87,6 +87,11 @@ const updateUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       console.log(err.name);
+      if (err.name === "ValidationError") {
+        return res
+          .status(invalidDataError)
+          .send({ message: "Bad Request! Invalid data passed" });
+      }
       if (err.name === "CastError") {
         return res
           .status(invalidDataError)
