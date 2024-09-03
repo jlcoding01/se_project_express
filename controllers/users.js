@@ -122,7 +122,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ jwt: token });
+      res.send({ user, jwt: token });
     })
     .catch((err) => {
       console.error(err);
