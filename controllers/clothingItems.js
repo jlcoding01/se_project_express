@@ -11,7 +11,7 @@ const ForbiddenError = require("../errors/forbidden-err");
 
 const getClothingItem = (req, res, next) => {
   ClothingItem.find({})
-    .orFail()
+    // .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.log(err.name);
