@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { createUser, login } = require("./controllers/users");
 const { getClothingItem } = require("./controllers/clothingItems");
@@ -10,7 +11,6 @@ const {
   validateUserBody,
   validateUserLogIn,
 } = require("./middlewares/validation");
-const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
@@ -32,7 +32,7 @@ app.use("/", mainRouter);
 
 app.use(errorLogger);
 
-//celebrate error handler
+// celebrate error handler
 app.use(errors());
 // centralized handler
 app.use(errorHandler);

@@ -45,9 +45,10 @@ const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email) {
-    return res
-      .status(invalidDataError)
-      .send({ message: "Email or Password is required!" });
+    next(new BadRequestError("Email or Password is required!"));
+    // return res
+    //   .status(invalidDataError)
+    //   .send({ message: "Email or Password is required!" });
   }
 
   return User.findOne({ email })
