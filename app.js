@@ -28,13 +28,12 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
+app.use(requestLogger);
 app.post("/signup", validateUserBody, createUser);
 app.post("/signin", validateUserLogIn, login);
 app.get("/items", getClothingItem);
 
 app.use(auth);
-
-app.use(requestLogger);
 
 app.use("/", mainRouter);
 
